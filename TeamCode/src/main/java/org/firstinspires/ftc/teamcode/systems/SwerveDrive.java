@@ -17,7 +17,6 @@ public class SwerveDrive {
     private final Telemetry telemetry;
     private final IMU imu;
     private final swerveCalc swerveMath = new swerveCalc();
-    private final diffySwerveCalc diffyMath = new diffySwerveCalc();
     private final boolean optimumTurn;
 
     private double[] modulesTargetRot = new double[RobotConstants.numberOfModules];
@@ -78,14 +77,29 @@ public class SwerveDrive {
             moduleRotEncoder = AngleUnit.normalizeDegrees(moduleRotEncoder);
             modulesTargetRot[i] = AngleUnit.normalizeDegrees(modulesTargetRot[i]);
 
-            double[] optimizedModuleVals = diffyMath.optimizedTurning(modulesTargetRot[i],moduleRotEncoder,modulePower);
+            double[] optimizedModuleVals = diffySwerveCalc.optimizedTurning(modulesTargetRot[i],moduleRotEncoder,modulePower);
 
             if (optimumTurn) {
                 modulesTargetRot[i] = optimizedModuleVals[0];
                 modulePower = optimizedModuleVals[1];
             }
 
-            double[] moduleVals = diffyMath.
+            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder));
+            for (DcMotorEx motor: RobotConstants.motors) {
+                char[] chars = motor.toString().toCharArray();
+                for (char c : chars) {
+                    if (Character.isDigit(c)) {
+                        if (Character.getNumericValue(c) == i) {
+                            if (motor.toString().toLowerCase().contains("right")) {
+                                motor.setPower(motorVals[0]);
+                            }
+                            if (motor.toString().toLowerCase().contains("left")) {
+                                motor.setPower(motorVals[1]);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

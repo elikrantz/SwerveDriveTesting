@@ -3,14 +3,14 @@ package org.firstinspires.ftc.teamcode.maths;
 public class diffySwerveCalc {
 
     public static double[] convert2Diffy(double wheelVel, double moduleAngle) {
-        double motor1 = moduleAngle + wheelVel;
-        double motor2 = moduleAngle - wheelVel;
-        double maxVal = MathEx.max(Math.abs(motor1), Math.abs(motor2), 1);
+        double motorRight = moduleAngle + wheelVel;
+        double motorLeft = moduleAngle - wheelVel;
+        double maxVal = MathEx.max(Math.abs(motorRight), Math.abs(motorLeft), 1);
         if (maxVal > 1) {
-            motor1 /= Math.abs(maxVal);
-            motor2 /= Math.abs(maxVal);
+            motorRight /= Math.abs(maxVal);
+            motorLeft /= Math.abs(maxVal);
         }
-        return new double[] {motor1,motor2};
+        return new double[] {motorRight,motorLeft};
     }
 
     public static double[] optimizedTurning(double target, double current, double power) {
