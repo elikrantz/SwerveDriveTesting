@@ -36,10 +36,22 @@ public class MathEx {
         return maxVal;
     }
 
+    public static double clip(double value, double min) {
+        value = (Math.abs(value) <= min) ? 0 : value;
+        return value;
+    }
+
+    public static double[] clipMulti(double min, @NonNull double... values) {
+        double[] output = new double[values.length];
+        for (int i = 0; i < values.length; i++) {
+            output[i] = (Math.abs(values[i]) <= min) ? 0 : values[i];
+        }
+        return output;
+    }
+
     public static double modulusDegrees(double degrees) {
         return degrees % 360;
     }
-
 
     public static double EncoderTicks2Degrees(double ticks) {
         return modulusDegrees(RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder);

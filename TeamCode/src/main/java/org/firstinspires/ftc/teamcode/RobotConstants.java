@@ -1,29 +1,21 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.systems.Encoders;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 
 
 public class RobotConstants {
 
     public static DcMotorEx module1Left, module1Right, module2Right, module2Left;
     public static List<DcMotorEx> motors = Arrays.asList(module1Left, module1Right, module2Right, module2Left);
+    public static List<String> motorNames = Arrays.asList("module1Left", "module1Right", "module2Right", "module2Left");
     public static List<DcMotorEx> reversedMotors = Arrays.asList(module1Left);
 
     public static DcMotorEx module1Encoder, module2Encoder;
     public static List<DcMotorEx> moduleEncoders = Arrays.asList(module1Encoder, module2Encoder);
+    public static List<String> moduleEncoderNames = Arrays.asList("module1Encoder", "module2Encoder");
 
     public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
             RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;

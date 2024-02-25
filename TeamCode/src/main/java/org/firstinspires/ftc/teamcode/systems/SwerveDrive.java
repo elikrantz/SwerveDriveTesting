@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.maths.MathEx;
 import org.firstinspires.ftc.teamcode.maths.diffySwerveCalc;
@@ -27,10 +28,14 @@ public class SwerveDrive {
             motor = hardwareMap.get(DcMotorEx.class, motor.toString());
             if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
+        /*DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
+        motors = RobotConstants.motors.toArray(motors);
+        for (int motorNum = 0; motorNum < motors.length; motorNum++) {
+            motors[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(motorNum));
+            if (RobotConstants.reversedMotors.contains(motors[motorNum])) motors[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
+        }*/
 
-        for (DcMotorEx encoder : RobotConstants.moduleEncoders) {
-            encoder = hardwareMap.get(DcMotorEx.class, encoder.toString());
-        }
+        new EncodersEx(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -46,9 +51,7 @@ public class SwerveDrive {
             if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        for (DcMotorEx encoder : RobotConstants.moduleEncoders) {
-            encoder = hardwareMap.get(DcMotorEx.class, encoder.toString());
-        }
+        new EncodersEx(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -66,7 +69,7 @@ public class SwerveDrive {
         double[][] output = swerveMath.calculate(x,y,rx,heading);
 
         for (int i = 0; i < RobotConstants.numberOfModules; i++) {
-            double moduleRotEncoder = MathEx.EncoderTicks2Degrees(RobotConstants.moduleEncoders.get(i).getCurrentPosition());
+            double moduleRotEncoder = EncodersEx.getEncoderDegrees(i);
 
             double modulePower = output[0][i];
 
@@ -100,6 +103,21 @@ public class SwerveDrive {
                     }
                 }
             }
+            /*for (int motorNum = 0; motorNum < RobotConstants.motors.size(); motorNum++) {
+                char[] chars = RobotConstants.motorNames.get(motorNum).toCharArray();
+                for (char c : chars) {
+                    if (Character.isDigit(c)) {
+                        if (Character.getNumericValue(c) == i) {
+                            if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("right")) {
+                                RobotConstants.motors.get(motorNum).setPower(motorVals[0]);
+                            }
+                            if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("left")) {
+                                RobotConstants.motors.get(motorNum).setPower(motorVals[1]);
+                            }
+                        }
+                    }
+                }
+            }*/
         }
     }
 }
