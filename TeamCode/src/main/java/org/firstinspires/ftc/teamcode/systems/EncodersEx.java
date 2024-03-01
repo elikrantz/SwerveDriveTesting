@@ -10,11 +10,13 @@ import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.maths.MathEx;
 
 public class EncodersEx {
+    //HardwareMap hardwareMap;
 
-    public EncodersEx(HardwareMap hardwareMap) {
-        /*for (DcMotorEx encoder : RobotConstants.moduleEncoders) {
-            encoder = hardwareMap.get(DcMotorEx.class, encoder.toString());
-        }*/
+    /*public EncodersEx(DcMotorEx motor) {
+        //
+    }*/
+
+    public static void InitializeEncoders(HardwareMap hardwareMap) {
         DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
         encoders = RobotConstants.moduleEncoders.toArray(encoders);
         for (int motorNum = 0; motorNum < encoders.length; motorNum++) {

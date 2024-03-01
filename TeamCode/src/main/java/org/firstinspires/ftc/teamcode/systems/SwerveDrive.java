@@ -19,6 +19,7 @@ public class SwerveDrive {
     private final IMU imu;
     private final swerveCalc swerveMath = new swerveCalc();
     private final boolean optimumTurn;
+    private EncodersEx EncodersExs;
 
     private double[] modulesTargetRot = new double[RobotConstants.numberOfModules];
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
@@ -35,7 +36,7 @@ public class SwerveDrive {
             if (RobotConstants.reversedMotors.contains(motors[motorNum])) motors[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        new EncodersEx(hardwareMap);
+        EncodersEx.InitializeEncoders(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -51,7 +52,7 @@ public class SwerveDrive {
             if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        new EncodersEx(hardwareMap);
+        EncodersEx.InitializeEncoders(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
