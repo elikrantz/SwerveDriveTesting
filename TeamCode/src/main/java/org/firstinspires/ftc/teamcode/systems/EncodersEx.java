@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.systems;
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.RobotConstants;
@@ -11,8 +12,14 @@ import org.firstinspires.ftc.teamcode.maths.MathEx;
 public class EncodersEx {
 
     public EncodersEx(HardwareMap hardwareMap) {
-        for (DcMotorEx encoder : RobotConstants.moduleEncoders) {
+        /*for (DcMotorEx encoder : RobotConstants.moduleEncoders) {
             encoder = hardwareMap.get(DcMotorEx.class, encoder.toString());
+        }*/
+        DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
+        encoders = RobotConstants.moduleEncoders.toArray(encoders);
+        for (int motorNum = 0; motorNum < encoders.length; motorNum++) {
+            encoders[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(motorNum));
+            //if (RobotConstants.reversedMotors.contains(encoders[motorNum])) encoders[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
         }
     }
 

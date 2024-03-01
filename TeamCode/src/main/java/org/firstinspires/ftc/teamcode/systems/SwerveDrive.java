@@ -24,16 +24,16 @@ public class SwerveDrive {
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
 
     public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap) {
-        for (DcMotorEx motor : RobotConstants.motors) {
+        /*for (DcMotorEx motor : RobotConstants.motors) {
             motor = hardwareMap.get(DcMotorEx.class, motor.toString());
             if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
-        /*DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
+        }*/
+        DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
         motors = RobotConstants.motors.toArray(motors);
         for (int motorNum = 0; motorNum < motors.length; motorNum++) {
             motors[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(motorNum));
             if (RobotConstants.reversedMotors.contains(motors[motorNum])) motors[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
-        }*/
+        }
 
         new EncodersEx(hardwareMap);
 
@@ -88,11 +88,11 @@ public class SwerveDrive {
             }
 
             double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder));
-            for (DcMotorEx motor: RobotConstants.motors) {
+            /*for (DcMotorEx motor: RobotConstants.motors) {
                 char[] chars = motor.toString().toCharArray();
                 for (char c : chars) {
                     if (Character.isDigit(c)) {
-                        if (Character.getNumericValue(c) == i) {
+                        if (Character.getNumericValue(c) == (i+1)) {
                             if (motor.toString().toLowerCase().contains("right")) {
                                 motor.setPower(motorVals[0]);
                             }
@@ -102,12 +102,12 @@ public class SwerveDrive {
                         }
                     }
                 }
-            }
-            /*for (int motorNum = 0; motorNum < RobotConstants.motors.size(); motorNum++) {
+            }*/
+            for (int motorNum = 0; motorNum < RobotConstants.motors.size(); motorNum++) {
                 char[] chars = RobotConstants.motorNames.get(motorNum).toCharArray();
                 for (char c : chars) {
                     if (Character.isDigit(c)) {
-                        if (Character.getNumericValue(c) == i) {
+                        if (Character.getNumericValue(c) == (i+1)) {
                             if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("right")) {
                                 RobotConstants.motors.get(motorNum).setPower(motorVals[0]);
                             }
@@ -117,7 +117,7 @@ public class SwerveDrive {
                         }
                     }
                 }
-            }*/
+            }
         }
     }
 }
