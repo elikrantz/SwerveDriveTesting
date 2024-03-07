@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.systems.EncodersEx;
 
 import java.util.Arrays;
 import java.util.List;
 
-
+@Config
 public class RobotConstants {
 
     public static DcMotorEx module1Left, module1Right, module2Right, module2Left;
@@ -22,7 +25,9 @@ public class RobotConstants {
     public static RevHubOrientationOnRobot.UsbFacingDirection USB_FACING_DIR =
             RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
-    public static double pulsesPerRevEncoder = 537.7;
+    public static double rotationTest = 0;
+
+    public static double pulsesPerRevEncoder = 22.5;
 
     public static final int numberOfModules = 1;
     public static final double gearRatioLeftMotor2Wheel = 1;

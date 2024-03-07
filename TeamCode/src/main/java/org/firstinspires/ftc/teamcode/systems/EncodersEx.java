@@ -11,10 +11,11 @@ import org.firstinspires.ftc.teamcode.maths.MathEx;
 
 public class EncodersEx {
     //HardwareMap hardwareMap;
+    DcMotorEx encoder;
 
-    /*public EncodersEx(DcMotorEx motor) {
-        //
-    }*/
+    public EncodersEx(DcMotorEx encoder) {
+        this.encoder = encoder;
+    }
 
     public static void InitializeEncoders(HardwareMap hardwareMap) {
         DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
@@ -25,8 +26,8 @@ public class EncodersEx {
         }
     }
 
-    public static double getEncoderDegrees(int indexNum) {
-        double degrees = MathEx.EncoderTicks2Degrees(RobotConstants.moduleEncoders.get(indexNum).getCurrentPosition());
+    public int getEncoderDegrees() {
+        int degrees = (int)MathEx.EncoderTicks2Degrees(encoder.getCurrentPosition());
         return degrees;
     }
 }

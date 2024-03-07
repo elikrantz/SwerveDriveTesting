@@ -53,7 +53,8 @@ public class MathEx {
         return degrees % 360;
     }
 
-    public static double EncoderTicks2Degrees(double ticks) {
-        return modulusDegrees(RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder);
+    public static double EncoderTicks2Degrees(int ticks) {
+        //return modulusDegrees(RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder);
+        return RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder;
     }
 }

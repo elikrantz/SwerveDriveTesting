@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.systems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,6 +16,9 @@ import org.firstinspires.ftc.teamcode.maths.MathEx;
 import org.firstinspires.ftc.teamcode.maths.diffySwerveCalc;
 import org.firstinspires.ftc.teamcode.maths.swerveCalc;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SwerveDrive {
     private final Telemetry telemetry;
     private final IMU imu;
@@ -21,22 +26,37 @@ public class SwerveDrive {
     private final boolean optimumTurn;
     private EncodersEx EncodersExs;
 
+
     private double[] modulesTargetRot = new double[RobotConstants.numberOfModules];
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
+
+    DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
+    DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
+    FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap) {
         /*for (DcMotorEx motor : RobotConstants.motors) {
             motor = hardwareMap.get(DcMotorEx.class, motor.toString());
             if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
         }*/
-        DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
+        //DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
         motors = RobotConstants.motors.toArray(motors);
         for (int motorNum = 0; motorNum < motors.length; motorNum++) {
             motors[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(motorNum));
             if (RobotConstants.reversedMotors.contains(motors[motorNum])) motors[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        EncodersEx.InitializeEncoders(hardwareMap);
+        //EncodersEx.InitializeEncoders(hardwareMap);
+        /*EncodersEx[] encoders = new EncodersEx[RobotConstants.moduleEncoders.size()];
+        encoders = RobotConstants.moduleEncoders.toArray(encoders);
+        for (int motorNum = 0; motorNum < encoders.length; motorNum++) {
+            encoders[motorNum] = new EncodersEx(hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(motorNum)));
+        }*/
+        //DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
+        encoders = RobotConstants.moduleEncoders.toArray(encoders);
+        for (int encoderNum = 0; encoderNum < encoders.length; encoderNum++) {
+            encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(encoderNum));
+        }
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -52,7 +72,17 @@ public class SwerveDrive {
             if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
-        EncodersEx.InitializeEncoders(hardwareMap);
+        //EncodersEx.InitializeEncoders(hardwareMap);
+        /*EncodersEx[] encoders = new EncodersEx[RobotConstants.moduleEncoders.size()];
+        encoders = RobotConstants.moduleEncoders.toArray(encoders);
+        for (int motorNum = 0; motorNum < encoders.length; motorNum++) {
+            encoders[motorNum] = new EncodersEx(hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(motorNum)));
+        }*/
+        DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
+        encoders = RobotConstants.moduleEncoders.toArray(encoders);
+        for (int encoderNum = 0; encoderNum < encoders.length; encoderNum++) {
+            encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(encoderNum));
+        }
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -64,13 +94,20 @@ public class SwerveDrive {
     }
 
     public void drive (double x, double y, double rx) {
+        TelemetryPacket packet = new TelemetryPacket();
 
         double heading = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         double[][] output = swerveMath.calculate(x,y,rx,heading);
+        //packet.put("output", output);
 
         for (int i = 0; i < RobotConstants.numberOfModules; i++) {
-            double moduleRotEncoder = EncodersEx.getEncoderDegrees(i);
+            telemetry.addData("Power", output[0][i]);
+            telemetry.addData("Rotation", output[1][i]);
+            //double moduleRotEncoder = RobotConstants.moduleEncoders.get(i).getEncoderDegrees();
+            double moduleRotEncoder = MathEx.EncoderTicks2Degrees(encoders[i].getCurrentPosition());
+            telemetry.addData("degrees", moduleRotEncoder);
+            //double moduleRotEncoder = RobotConstants.rotationTest;
 
             double modulePower = output[0][i];
 
@@ -110,15 +147,19 @@ public class SwerveDrive {
                     if (Character.isDigit(c)) {
                         if (Character.getNumericValue(c) == (i+1)) {
                             if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("right")) {
-                                RobotConstants.motors.get(motorNum).setPower(motorVals[0]);
+                                motors[motorNum].setPower(motorVals[0]);
+                                telemetry.addData(c+"Right",motorVals[0]);
                             }
                             if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("left")) {
-                                RobotConstants.motors.get(motorNum).setPower(motorVals[1]);
+                                motors[motorNum].setPower(motorVals[1]);
+                                telemetry.addData(c+"Left",motorVals[0]);
                             }
                         }
                     }
                 }
             }
+            telemetry.update();
+            dashboard.sendTelemetryPacket(packet);
         }
     }
 }
