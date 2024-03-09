@@ -34,6 +34,11 @@ public class RobotConstants {
     public static final double gearRatioRightMotor2Wheel = 1;
     public static final double gearRatio2Encoder = 1;
 
+    public static final double[][] PIDvals = new double[][] {
+            {0.1},
+            {0.1}
+    };
+
     public static final double[][] modulePositions = new double[][] { // x,y (left module is first)
             {0,0},
             {0,0}

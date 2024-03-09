@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.maths.MathEx;
+import org.firstinspires.ftc.teamcode.maths.PIDcontroller;
 import org.firstinspires.ftc.teamcode.maths.diffySwerveCalc;
 import org.firstinspires.ftc.teamcode.maths.swerveCalc;
 
@@ -24,22 +25,25 @@ public class SwerveDrive {
     private final IMU imu;
     private final swerveCalc swerveMath = new swerveCalc();
     private final boolean optimumTurn;
-    private EncodersEx EncodersExs;
-
 
     private double[] modulesTargetRot = new double[RobotConstants.numberOfModules];
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
 
     DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
     DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
+    private final PIDcontroller[] modulesPID = new PIDcontroller[RobotConstants.PIDvals.length];
+    //private final PIDcontroller[] modulesPID = new PIDcontroller[RobotConstants.numberOfModules];
+
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap) {
-        /*for (DcMotorEx motor : RobotConstants.motors) {
-            motor = hardwareMap.get(DcMotorEx.class, motor.toString());
-            if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
-        }*/
-        //DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
+        for (int moduleNum = 0; moduleNum < modulesPID.length; moduleNum++) {
+            double[] vals = new double[4];
+            Arrays.fill(vals, 0);
+            System.arraycopy(RobotConstants.PIDvals[moduleNum], 0, vals, 0, RobotConstants.PIDvals[moduleNum].length);
+            modulesPID[moduleNum] = new PIDcontroller(vals[0],vals[1],vals[2],vals[3]);
+        }
+
         motors = RobotConstants.motors.toArray(motors);
         for (int motorNum = 0; motorNum < motors.length; motorNum++) {
             motors[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(motorNum));
@@ -125,7 +129,7 @@ public class SwerveDrive {
                 modulePower = optimizedModuleVals[1];
             }
 
-            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder));
+            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
             /*for (DcMotorEx motor: RobotConstants.motors) {
                 char[] chars = motor.toString().toCharArray();
                 for (char c : chars) {

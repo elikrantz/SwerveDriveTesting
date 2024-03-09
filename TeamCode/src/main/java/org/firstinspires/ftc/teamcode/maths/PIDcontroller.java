@@ -40,34 +40,13 @@ public class PIDcontroller {
         kFS = kF;
     }
     public PIDcontroller(double kP) {
-        this.kP = kP;
-        this.kI = 0;
-        this.kD = 0;
-        this.kF = 0;
-        kPS = kP;
-        kIS = 0;
-        kDS = 0;
-        kFS = 0;
+        this(kP,0,0,0);
     }
     public PIDcontroller(double kP, double kD) {
-        this.kP = kP;
-        this.kI = 0;
-        this.kD = kD;
-        this.kF = 0;
-        kPS = kP;
-        kIS = 0;
-        kDS = kD;
-        kFS = 0;
+        this(kP,0,kD,0);
     }
     public PIDcontroller(double kP, double kI, double kD) {
-        this.kP = kP;
-        this.kI = kI;
-        this.kD = kD;
-        this.kF = 0;
-        kPS = kP;
-        kIS = kI;
-        kDS = kD;
-        kFS = 0;
+        this(kP,kI,kD,0);
     }
 
     public void setLimits(double maxIntegral) {
@@ -76,7 +55,7 @@ public class PIDcontroller {
 
 
     public double controller(double error, double powerMax) {
-        timer.reset();
+        //timer.reset();
         integral += error * timer.seconds();
         integral = Range.clip(integral,-maxIntegralFinal,maxIntegralFinal);
         derivative = (error - prevError) / timer.seconds();
@@ -85,5 +64,8 @@ public class PIDcontroller {
         power = Range.clip(power,-powerMax,powerMax);
         timer.reset();
         return power;
+    }
+    public double controller(double error) {
+        return this.controller(error,1);
     }
 }
