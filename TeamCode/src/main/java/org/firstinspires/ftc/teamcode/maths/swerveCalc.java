@@ -40,7 +40,7 @@ public class swerveCalc {
             velModuleY = (0 * strafe) + (1 * forward) + (RobotConstants.modulePositions[i][0] * velRobotRot);
 
             velWheel = Math.sqrt(Math.pow(velModuleX,2) + Math.pow(velModuleY,2));
-            moduleAngle = Math.atan2(velModuleY,velModuleX) * 180 / Math.PI;
+            moduleAngle = Math.atan2(velModuleX,velModuleY) * 180 / Math.PI;
 
             if (normalize && Math.abs(velWheel) >= Math.abs(maxVel)) maxVel = Math.abs(velWheel);
 

@@ -39,8 +39,8 @@ public class RobotConstants {
             {0.01}
     };
 
-    public static final double[][] modulePositions = new double[][] { // x,y (left module is first)
-            {0,0},
+    public static final double[][] modulePositions = new double[][] { // x,y (unit: inches) (left module is first) (positive is right and up)
+            {-4,0},
             {0,0}
     };
 }
