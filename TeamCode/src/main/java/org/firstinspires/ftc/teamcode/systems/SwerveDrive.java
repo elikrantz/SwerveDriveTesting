@@ -130,6 +130,8 @@ public class SwerveDrive {
             }
 
             double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
+            motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
+            motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
             /*for (DcMotorEx motor: RobotConstants.motors) {
                 char[] chars = motor.toString().toCharArray();
                 for (char c : chars) {
