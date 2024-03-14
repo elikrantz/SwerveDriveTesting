@@ -34,7 +34,7 @@ public class RobotConstants {
     public static final double gearRatioRightMotor2Wheel = 1;
     public static final double gearRatio2Encoder = 2;
 
-    public static double powerCutOff = 0.01;
+    public static double powerCutOff = 0.05;
 
     public static double[][] PIDvals = new double[][] {
             {0.005},
