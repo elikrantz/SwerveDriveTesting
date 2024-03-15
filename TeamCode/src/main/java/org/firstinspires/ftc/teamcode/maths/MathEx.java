@@ -37,7 +37,10 @@ public class MathEx {
     }
 
     public static double clip(double value, double min) {
-        value = (Math.abs(value) <= min) ? 0 : value;
+        //value = (Math.abs(value) <= min) ? 0 : value;
+        if (Math.abs(value) <= Math.abs(min)) {
+            value = 0;
+        }
         return value;
     }
 

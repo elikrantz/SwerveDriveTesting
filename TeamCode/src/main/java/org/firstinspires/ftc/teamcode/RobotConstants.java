@@ -37,8 +37,8 @@ public class RobotConstants {
     public static double powerCutOff = 0.05;
 
     public static double[][] PIDvals = new double[][] {
-            {0.005},
-            {0.005}
+            {0.01},
+            {0.01}
     };
 
     public static final double[][] modulePositions = new double[][] { // x,y (unit: inches) (left module is first) (positive is right and up)
