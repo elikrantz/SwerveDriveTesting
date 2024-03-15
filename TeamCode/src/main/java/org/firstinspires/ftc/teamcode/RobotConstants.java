@@ -14,7 +14,7 @@ public class RobotConstants {
     public static DcMotorEx module1Left, module1Right, module2Right, module2Left;
     public static List<DcMotorEx> motors = Arrays.asList(module1Left, module1Right);
     public static List<String> motorNames = Arrays.asList("module1Left", "module1Right");
-    public static List<DcMotorEx> reversedMotors = Arrays.asList(module1Left);
+    public static List<DcMotorEx> reversedMotors = Arrays.asList();
 
     public static DcMotorEx module1Encoder, module2Encoder;
     public static List<DcMotorEx> moduleEncoders = Arrays.asList(module1Encoder);
