@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.maths;
 
+import org.firstinspires.ftc.teamcode.RobotConstants;
+
 public class diffySwerveCalc {
 
     public static double[] convert2Diffy(double wheelVel, double moduleAngle) {
-        double motorRight = moduleAngle + wheelVel;
-        double motorLeft = moduleAngle - wheelVel;
+        double motorRight = moduleAngle + RobotConstants.motorRightDir * wheelVel;
+        double motorLeft = moduleAngle + RobotConstants.motorLeftDir * wheelVel;
         double maxVal = MathEx.max(Math.abs(motorRight), Math.abs(motorLeft), 1);
         if (maxVal > 1) {
             motorRight /= Math.abs(maxVal);

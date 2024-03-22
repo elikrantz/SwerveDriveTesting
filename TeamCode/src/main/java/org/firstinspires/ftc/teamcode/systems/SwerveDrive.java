@@ -71,9 +71,17 @@ public class SwerveDrive {
         this.optimumTurn = true;
     }
     public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap, boolean optimumTurn) {
-        for (DcMotorEx motor : RobotConstants.motors) {
-            motor = hardwareMap.get(DcMotorEx.class, motor.toString());
-            if (RobotConstants.reversedMotors.contains(motor)) motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        for (int moduleNum = 0; moduleNum < modulesPID.length; moduleNum++) {
+            double[] vals = new double[4];
+            Arrays.fill(vals, 0);
+            System.arraycopy(RobotConstants.PIDvals[moduleNum], 0, vals, 0, RobotConstants.PIDvals[moduleNum].length);
+            modulesPID[moduleNum] = new PIDcontroller(vals[0],vals[1],vals[2],vals[3]);
+        }
+
+        motors = RobotConstants.motors.toArray(motors);
+        for (int motorNum = 0; motorNum < motors.length; motorNum++) {
+            motors[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(motorNum));
+            if (RobotConstants.reversedMotors.contains(motors[motorNum])) motors[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
         //EncodersEx.InitializeEncoders(hardwareMap);
@@ -82,10 +90,10 @@ public class SwerveDrive {
         for (int motorNum = 0; motorNum < encoders.length; motorNum++) {
             encoders[motorNum] = new EncodersEx(hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(motorNum)));
         }*/
-        DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
+        //DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
         encoders = RobotConstants.moduleEncoders.toArray(encoders);
         for (int encoderNum = 0; encoderNum < encoders.length; encoderNum++) {
-            encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(encoderNum));
+            encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(encoderNum));
         }
 
         imu = hardwareMap.get(IMU.class, "imu");
