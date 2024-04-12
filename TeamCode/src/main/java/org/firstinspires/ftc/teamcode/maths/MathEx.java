@@ -57,7 +57,7 @@ public class MathEx {
     }
 
     public static double EncoderTicks2Degrees(int ticks) {
-        //return modulusDegrees(RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder);
-        return RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder;
+        return modulusDegrees(RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder);
+        //return RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder;
     }
 }

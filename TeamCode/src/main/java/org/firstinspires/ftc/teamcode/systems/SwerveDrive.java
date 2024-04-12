@@ -25,6 +25,7 @@ public class SwerveDrive {
     private final IMU imu;
     private final swerveCalc swerveMath = new swerveCalc();
     private final boolean optimumTurn;
+    private final boolean testing;
 
     private double[] modulesTargetRot = new double[RobotConstants.numberOfModules];
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
@@ -69,8 +70,9 @@ public class SwerveDrive {
 
         this.telemetry = telemetry;
         this.optimumTurn = true;
+        this.testing = false;
     }
-    public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap, boolean optimumTurn) {
+    public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap, boolean optimumTurn, boolean testing) {
         for (int moduleNum = 0; moduleNum < modulesPID.length; moduleNum++) {
             double[] vals = new double[4];
             Arrays.fill(vals, 0);
@@ -103,6 +105,7 @@ public class SwerveDrive {
 
         this.telemetry = telemetry;
         this.optimumTurn = optimumTurn;
+        this.testing = testing;
     }
 
     public void drive (double x, double y, double rx) {
@@ -136,8 +139,11 @@ public class SwerveDrive {
                 modulesTargetRot[i] = optimizedModuleVals[0];
                 modulePower = optimizedModuleVals[1];
             }
+            telemetry.addData("modTargetRot"+i, modulesTargetRot[i]);
+            telemetry.addData("modPower"+i, modulePower);
 
-            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
+            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,((modulesTargetRot[i] - moduleRotEncoder) / 360));
+            //double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
             motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
             motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
             /*for (DcMotorEx motor: RobotConstants.motors) {
@@ -161,11 +167,15 @@ public class SwerveDrive {
                     if (Character.isDigit(c)) {
                         if (Character.getNumericValue(c) == (i+1)) {
                             if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("right")) {
-                                motors[motorNum].setPower(motorVals[0]);
+                                if (!testing) {
+                                    motors[motorNum].setPower(motorVals[0]);
+                                }
                                 telemetry.addData(c+"Right",motorVals[0]);
                             }
                             if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("left")) {
-                                motors[motorNum].setPower(motorVals[1]);
+                                if (!testing) {
+                                    motors[motorNum].setPower(motorVals[1]);
+                                }
                                 telemetry.addData(c+"Left",motorVals[0]);
                             }
                         }

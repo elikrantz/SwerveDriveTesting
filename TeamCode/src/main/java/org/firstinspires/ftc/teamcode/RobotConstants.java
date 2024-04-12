@@ -11,7 +11,7 @@ import java.util.List;
 @Config
 public class RobotConstants {
     public static double motorLeftDir = 1;
-    public static double motorRightDir = -1;
+    public static double motorRightDir = 1;
     public static DcMotorEx module1Left, module1Right, module2Right, module2Left;
     public static List<DcMotorEx> motors = Arrays.asList(module1Left, module1Right);
     public static List<String> motorNames = Arrays.asList("module1Left", "module1Right");
