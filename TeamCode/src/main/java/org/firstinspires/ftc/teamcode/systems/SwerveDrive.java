@@ -142,8 +142,9 @@ public class SwerveDrive {
             telemetry.addData("modTargetRot"+i, modulesTargetRot[i]);
             telemetry.addData("modPower"+i, modulePower);
 
-            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,((modulesTargetRot[i] - moduleRotEncoder) / 360));
+            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,((modulesTargetRot[i] - moduleRotEncoder)));
             //double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
+            telemetry.addData("PIDout"+i,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
             motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
             motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
             /*for (DcMotorEx motor: RobotConstants.motors) {
