@@ -33,7 +33,7 @@ public class motorTesting extends LinearOpMode {
                                 telemetry.addData(c + "Right", powerValR);
                             }
                             if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("left")) {
-                                double powerValL = -gamepad1.left_stick_x;
+                                double powerValL = gamepad1.left_stick_x;
                                 motors[motorNum].setPower(powerValL);
                                 telemetry.addData(c + "Left", powerValL);
                             }

@@ -33,7 +33,7 @@ public class RobotConstants {
     public static final int numberOfModules = 1;
     public static final double gearRatioLeftMotor2Wheel = 1;
     public static final double gearRatioRightMotor2Wheel = 1;
-    public static final double gearRatio2Encoder = 2;
+    public static final double gearRatio2Encoder = 0.5;
 
     public static double powerCutOff = 0.05;
 

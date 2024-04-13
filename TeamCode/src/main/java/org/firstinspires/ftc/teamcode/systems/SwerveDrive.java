@@ -133,6 +133,8 @@ public class SwerveDrive {
             moduleRotEncoder = AngleUnit.normalizeDegrees(moduleRotEncoder);
             modulesTargetRot[i] = AngleUnit.normalizeDegrees(modulesTargetRot[i]);
 
+            telemetry.addData("moduleRot1",moduleRotEncoder);
+            telemetry.addData("moduleTargetRot1 "+i,modulesTargetRot[i]);
             double[] optimizedModuleVals = diffySwerveCalc.optimizedTurning(modulesTargetRot[i],moduleRotEncoder,modulePower);
 
             if (optimumTurn) {
@@ -142,7 +144,7 @@ public class SwerveDrive {
             telemetry.addData("modTargetRot"+i, modulesTargetRot[i]);
             telemetry.addData("modPower"+i, modulePower);
 
-            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,((modulesTargetRot[i] - moduleRotEncoder)));
+            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,((modulesTargetRot[i] - moduleRotEncoder)),telemetry);
             //double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
             telemetry.addData("PIDout"+i,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
             motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
@@ -177,7 +179,7 @@ public class SwerveDrive {
                                 if (!testing) {
                                     motors[motorNum].setPower(motorVals[1]);
                                 }
-                                telemetry.addData(c+"Left",motorVals[0]);
+                                telemetry.addData(c+"Left",motorVals[1]);
                             }
                         }
                     }
