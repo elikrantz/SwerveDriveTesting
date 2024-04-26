@@ -33,6 +33,6 @@ public class testingTeleOpSwerve extends LinearOpMode {
     }
 
     private void Initialization() {
-        swerveDrive = new SwerveDrive(telemetry,hardwareMap,true, false);
+        swerveDrive = new SwerveDrive(telemetry,hardwareMap,true, false, true);
     }
 }

@@ -26,6 +26,7 @@ public class SwerveDrive {
     private final swerveCalc swerveMath = new swerveCalc();
     private final boolean optimumTurn;
     private final boolean testing;
+    private final boolean turnThenMove;
 
     private double[] modulesTargetRot = new double[RobotConstants.numberOfModules];
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
@@ -71,8 +72,9 @@ public class SwerveDrive {
         this.telemetry = telemetry;
         this.optimumTurn = true;
         this.testing = false;
+        this.turnThenMove = false;
     }
-    public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap, boolean optimumTurn, boolean testing) {
+    public SwerveDrive(Telemetry telemetry, HardwareMap hardwareMap, boolean optimumTurn, boolean testing, boolean turnThenMove) {
         for (int moduleNum = 0; moduleNum < modulesPID.length; moduleNum++) {
             double[] vals = new double[4];
             Arrays.fill(vals, 0);
@@ -106,6 +108,7 @@ public class SwerveDrive {
         this.telemetry = telemetry;
         this.optimumTurn = optimumTurn;
         this.testing = testing;
+        this.turnThenMove = turnThenMove;
     }
 
     public void drive (double x, double y, double rx) {
@@ -143,6 +146,10 @@ public class SwerveDrive {
             }
             telemetry.addData("modTargetRot"+i, modulesTargetRot[i]);
             telemetry.addData("modPower"+i, modulePower);
+
+            if (Math.abs(modulesTargetRot[i] - moduleRotEncoder) > RobotConstants.startMovingAngle) {
+                modulePower = 0;
+            }
 
             double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,((modulesTargetRot[i] - moduleRotEncoder)),telemetry);
             //double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));

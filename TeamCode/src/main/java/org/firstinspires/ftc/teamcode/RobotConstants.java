@@ -10,16 +10,26 @@ import java.util.List;
 
 @Config
 public class RobotConstants {
-    public static double motorLeftDir = -1;
-    public static double motorRightDir = 1;
+    /*public static double motorLeftDir = -1;
+    public static double motorRightDir = 1;*/
+    public static double startMovingAngle = 5;
+
+    /**
+     * Encoder is back of module, and then motor on left is Left motor, and same for right motor
+     * Encoders are one the encoder port for the module's Left motor
+     **/
     public static DcMotorEx module1Left, module1Right, module2Right, module2Left;
-    public static List<DcMotorEx> motors = Arrays.asList(module1Left, module1Right);
-    public static List<String> motorNames = Arrays.asList("module1Left", "module1Right");
+    public static List<DcMotorEx> motors = Arrays.asList(module1Left, module1Right, module2Right, module2Left);
+    public static List<String> motorNames = Arrays.asList("module1Left", "module1Right", "module2Right", "module2Left");
     public static List<DcMotorEx> reversedMotors = Arrays.asList();
 
     public static DcMotorEx module1Encoder, module2Encoder;
-    public static List<DcMotorEx> moduleEncoders = Arrays.asList(module1Encoder);
-    public static List<String> moduleEncoderNames = Arrays.asList("module1Encoder");
+    public static List<DcMotorEx> moduleEncoders = Arrays.asList(module1Encoder, module2Encoder);
+    /**
+     * module1Encoder = module1Left
+     * module2Encoder = module2Left
+     **/
+    public static List<String> moduleEncoderNames = Arrays.asList("module1Left", "module2Left");
 
     public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
             RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
@@ -30,7 +40,7 @@ public class RobotConstants {
 
     public static double pulsesPerRevEncoder = 22.5;
 
-    public static final int numberOfModules = 1;
+    public static final int numberOfModules = 2;
     public static final double gearRatioLeftMotor2Wheel = 1;
     public static final double gearRatioRightMotor2Wheel = 1;
     public static final double gearRatio2Encoder = 0.5;
