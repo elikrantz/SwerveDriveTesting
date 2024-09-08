@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -32,9 +33,12 @@ public class SwerveDrive {
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
 
     DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
+    Servo[] servos = new Servo[RobotConstants.servos.size()];
     DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
     private final PIDcontroller[] modulesPID = new PIDcontroller[RobotConstants.PIDvals.length];
     //private final PIDcontroller[] modulesPID = new PIDcontroller[RobotConstants.numberOfModules];
+
+    private final boolean doDiffySwerve = RobotConstants.doDiffySwerve;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -50,6 +54,11 @@ public class SwerveDrive {
         for (int motorNum = 0; motorNum < motors.length; motorNum++) {
             motors[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(motorNum));
             if (RobotConstants.reversedMotors.contains(motors[motorNum])) motors[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        servos = RobotConstants.servos.toArray(servos);
+        for (int servoNum = 0; servoNum < servos.length; servoNum++) {
+            servo[servoNum] = hardwareMap.get(Servo.class, RobotConstants.servoNames.get(servoNum));
+            if (RobotConstants.reversedServos.contains(servos[servoNum])) servos[servoNum].setDirection(Servo.Direction.REVERSE);
         }
 
         //EncodersEx.InitializeEncoders(hardwareMap);
@@ -86,6 +95,11 @@ public class SwerveDrive {
         for (int motorNum = 0; motorNum < motors.length; motorNum++) {
             motors[motorNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.motorNames.get(motorNum));
             if (RobotConstants.reversedMotors.contains(motors[motorNum])) motors[motorNum].setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        servos = RobotConstants.servos.toArray(servos);
+        for (int servoNum = 0; servoNum < servos.length; servoNum++) {
+            servo[servoNum] = hardwareMap.get(Servo.class, RobotConstants.servoNames.get(servoNum));
+            if (RobotConstants.reversedServos.contains(servos[servoNum])) servos[servoNum].setDirection(Servo.Direction.REVERSE);
         }
 
         //EncodersEx.InitializeEncoders(hardwareMap);
@@ -150,12 +164,18 @@ public class SwerveDrive {
             if (Math.abs(modulesTargetRot[i] - moduleRotEncoder) > RobotConstants.startMovingAngle) {
                 modulePower = 0;
             }
-
-            double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,((modulesTargetRot[i] - moduleRotEncoder)),telemetry);
-            //double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
-            telemetry.addData("PIDout"+i,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
-            motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
-            motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
+            
+            if (doDiffySwerve) {
+                double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,(modulesTargetRot[i] - moduleRotEncoder),telemetry);
+                //double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
+                telemetry.addData("PIDout"+i,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
+                motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
+                motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
+            } else {
+                double[] motorVals = diffySwerveCalc.convert2Coax(modulePower,modulesTargetRot[i],telemetry);
+                motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
+                //motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
+            }
             /*for (DcMotorEx motor: RobotConstants.motors) {
                 char[] chars = motor.toString().toCharArray();
                 for (char c : chars) {
@@ -171,22 +191,40 @@ public class SwerveDrive {
                     }
                 }
             }*/
-            for (int motorNum = 0; motorNum < RobotConstants.motors.size(); motorNum++) {
-                char[] chars = RobotConstants.motorNames.get(motorNum).toCharArray();
-                for (char c : chars) {
-                    if (Character.isDigit(c)) {
-                        if (Character.getNumericValue(c) == (i+1)) {
-                            if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("right")) {
+            if (doDiffySwerve) {
+                for (int motorNum = 0; motorNum < RobotConstants.motors.size(); motorNum++) {
+                    char[] chars = RobotConstants.motorNames.get(motorNum).toCharArray();
+                    for (char c : chars) {
+                        if (Character.isDigit(c)) {
+                            if (Character.getNumericValue(c) == (i+1)) {
+                                if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("right")) {
+                                    if (!testing) {
+                                        motors[motorNum].setPower(motorVals[0]);
+                                    }
+                                    telemetry.addData(c+"Right",motorVals[0]);
+                                }
+                                if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("left")) {
+                                    if (!testing) {
+                                        motors[motorNum].setPower(motorVals[1]);
+                                    }
+                                    telemetry.addData(c+"Left",motorVals[1]);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (int motorNum = 0; motorNum < RobotConstants.motors.size(); motorNum++) {
+                    char[] chars = RobotConstants.motorNames.get(motorNum).toCharArray();
+                    for (char c : chars) {
+                        if (Character.isDigit(c)) {
+                            if (Character.getNumericValue(c) == (i+1)) {
                                 if (!testing) {
                                     motors[motorNum].setPower(motorVals[0]);
+                                    servos[motorNum].setPosition(motorVals[1]);
                                 }
-                                telemetry.addData(c+"Right",motorVals[0]);
-                            }
-                            if (RobotConstants.motorNames.get(motorNum).toLowerCase().contains("left")) {
-                                if (!testing) {
-                                    motors[motorNum].setPower(motorVals[1]);
-                                }
-                                telemetry.addData(c+"Left",motorVals[1]);
+                                telemetry.addData(c+"Drive",motorVals[0]);
+                                telemetry.addData(c+"Servo",motorVals[1]);
                             }
                         }
                     }

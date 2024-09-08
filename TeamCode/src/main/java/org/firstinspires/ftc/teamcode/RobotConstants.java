@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.systems.EncodersEx;
 
@@ -14,14 +15,27 @@ public class RobotConstants {
     public static double motorRightDir = 1;*/
     public static double startMovingAngle = 5;
 
-    /**
+    public static boolean doDiffySwerve = true;
+
+    /** FOR DIFFY
      * Encoder is back of module, and then motor on left is Left motor, and same for right motor
      * Encoders are one the encoder port for the module's Left motor
      **/
-    public static DcMotorEx module1Left, module1Right, module2Right, module2Left;
-    public static List<DcMotorEx> motors = Arrays.asList(module1Left, module1Right, module2Right, module2Left);
-    public static List<String> motorNames = Arrays.asList("module1Left", "module1Right", "module2Right", "module2Left");
+    /** FOR COAX
+     * No encoders, servo is encoder
+     * Right is drive motor
+     * Left is servoMotor
+     * SERVO AND DRIVE MOTOR NEED TO BE IN SAME POSITION IN RESPECTIVE LISTS
+     **/
+    public static DcMotorEx module1Right, module2Right;
+    public static List<DcMotorEx> motors = Arrays.asList(module1Right, module2Right);
+    public static List<String> motorNames = Arrays.asList("module1Right", "module2Right");
     public static List<DcMotorEx> reversedMotors = Arrays.asList();
+
+    public static Servo module1Left, module2Left;
+    public static List<Servo> servos = Arrays.asList(module1Left, module2Left);
+    public static List<String> servoNames = Arrays.asList("module1Left", "module2Left");
+    public static List<DcMotorEx> reversedServos = Arrays.asList();
 
     public static DcMotorEx module1Encoder, module2Encoder;
     public static List<DcMotorEx> moduleEncoders = Arrays.asList(module1Encoder, module2Encoder);

@@ -31,6 +31,16 @@ public class diffySwerveCalc {
         return new double[] {motorRight,motorLeft};
     }
 
+    public static double[] convert2Coax(double wheelVel, double moduleAngle, Telemetry telemetry) {
+        telemetry.addData("moduleAngle",moduleAngle);
+        telemetry.addData("wheelVel", wheelVel);
+        double rotServo = moduleAngle;
+        double motorDrive = wheelVel;
+        double maxVal = MathEx.max(Math.abs(wheelVel), 1);
+        if (maxVal > 1) {motorDrive /= Math.abs(maxVal);}
+        return new double[] {motorDrive,rotServo};
+    }
+
     public static double[] optimizedTurning(double target, double current, double power) {
         double error = target - current;
 
