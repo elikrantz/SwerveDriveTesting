@@ -57,7 +57,7 @@ public class SwerveDrive {
         }
         servos = RobotConstants.servos.toArray(servos);
         for (int servoNum = 0; servoNum < servos.length; servoNum++) {
-            servo[servoNum] = hardwareMap.get(Servo.class, RobotConstants.servoNames.get(servoNum));
+            servos[servoNum] = hardwareMap.get(Servo.class, RobotConstants.servoNames.get(servoNum));
             if (RobotConstants.reversedServos.contains(servos[servoNum])) servos[servoNum].setDirection(Servo.Direction.REVERSE);
         }
 
@@ -98,7 +98,7 @@ public class SwerveDrive {
         }
         servos = RobotConstants.servos.toArray(servos);
         for (int servoNum = 0; servoNum < servos.length; servoNum++) {
-            servo[servoNum] = hardwareMap.get(Servo.class, RobotConstants.servoNames.get(servoNum));
+            servos[servoNum] = hardwareMap.get(Servo.class, RobotConstants.servoNames.get(servoNum));
             if (RobotConstants.reversedServos.contains(servos[servoNum])) servos[servoNum].setDirection(Servo.Direction.REVERSE);
         }
 
@@ -164,15 +164,15 @@ public class SwerveDrive {
             if (Math.abs(modulesTargetRot[i] - moduleRotEncoder) > RobotConstants.startMovingAngle) {
                 modulePower = 0;
             }
-            
+            double[] motorVals;
             if (doDiffySwerve) {
-                double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,(modulesTargetRot[i] - moduleRotEncoder),telemetry);
+                motorVals = diffySwerveCalc.convert2Diffy(modulePower,(modulesTargetRot[i] - moduleRotEncoder),telemetry);
                 //double[] motorVals = diffySwerveCalc.convert2Diffy(modulePower,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
                 telemetry.addData("PIDout"+i,modulesPID[i].controller(AngleUnit.normalizeDegrees(modulesTargetRot[i] - moduleRotEncoder)));
                 motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
                 motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
             } else {
-                double[] motorVals = diffySwerveCalc.convert2Coax(modulePower,modulesTargetRot[i],telemetry);
+                motorVals = diffySwerveCalc.convert2Coax(modulePower,modulesTargetRot[i],telemetry);
                 motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
                 //motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
             }
