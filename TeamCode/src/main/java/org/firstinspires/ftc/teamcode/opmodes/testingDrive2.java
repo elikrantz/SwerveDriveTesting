@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.RobotConstants;
 
-//@Config
+@Config
 @TeleOp
 public class testingDrive2 extends LinearOpMode {
     DcMotorEx[] motors = new DcMotorEx[RobotConstants.motors.size()];
