@@ -69,13 +69,11 @@ public class SwerveDrive {
         }*/
         //DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
         //encoders = RobotConstants.moduleEncoders.toArray(encoders);
-        if (!RobotConstants.usingServoForEncoders) {
-            for (int encoderNum = 0; encoderNum < encoders.length; encoderNum++) {
-                //encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(encoderNum));
-                //encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum));
-                //encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
-                encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.servos.get(encoderNum), RobotConstants.servoNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
-            }
+        for (int encoderNum = 0; encoderNum < encoders.length; encoderNum++) {
+            //encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(encoderNum));
+            //encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum));
+            encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
+            //encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.servos.get(encoderNum), RobotConstants.servoNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
         }
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -117,13 +115,11 @@ public class SwerveDrive {
         }*/
         //DcMotorEx[] encoders = new DcMotorEx[RobotConstants.moduleEncoders.size()];
         //encoders = RobotConstants.moduleEncoders.toArray(encoders);
-        if (!RobotConstants.usingServoForEncoders) {
-            for (int encoderNum = 0; encoderNum < encoders.length; encoderNum++) {
-                //encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(encoderNum));
-                //encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum));
-                encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
-                //encoders[encoderNum] = new EncodersEx(hardwareMap, servos[encoderNum], RobotConstants.servoNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
-            }
+        for (int encoderNum = 0; encoderNum < encoders.length; encoderNum++) {
+            //encoders[encoderNum] = hardwareMap.get(DcMotorEx.class, RobotConstants.moduleEncoderNames.get(encoderNum));
+            //encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum));
+            encoders[encoderNum] = new EncodersEx(hardwareMap, RobotConstants.moduleEncoders.get(encoderNum), RobotConstants.moduleEncoderNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
+            //encoders[encoderNum] = new EncodersEx(hardwareMap, servos[encoderNum], RobotConstants.servoNames.get(encoderNum), RobotConstants.encoderZeroValues[encoderNum]);
         }
 
         imu = hardwareMap.get(IMU.class, "imu");
@@ -151,11 +147,12 @@ public class SwerveDrive {
             //double moduleRotEncoder = RobotConstants.moduleEncoders.get(i).getEncoderDegrees();
             //double moduleRotEncoder = MathEx.EncoderTicks2Degrees(encoders[i].getCurrentPosition());
             double moduleRotEncoder;
-            if (RobotConstants.usingServoForEncoders) {
-                moduleRotEncoder = MathEx.getServoPositionDegrees(servos[i], RobotConstants.encoderZeroValues[i]);
-            } else {
-                moduleRotEncoder = encoders[i].getEncoderDegrees();
-            }
+//            if (RobotConstants.usingServoForEncoders) {
+//                moduleRotEncoder = MathEx.getServoPositionDegrees(servos[i], RobotConstants.encoderZeroValues[i]);
+//            } else {
+//                moduleRotEncoder = encoders[i].getEncoderDegrees();
+//            }
+            moduleRotEncoder = encoders[i].getEncoderDegrees();
             telemetry.addData("degrees", moduleRotEncoder);
             //double moduleRotEncoder = RobotConstants.rotationTest;
 
@@ -193,7 +190,7 @@ public class SwerveDrive {
                 motorVals = diffySwerveCalc.convert2Coax(modulePower,modulesTargetRot[i],telemetry);
                 motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
                 //motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
-                motorVals[1] = MathEx.scale(motorVals[1], new double[] {0,360}, new double[] {0,1}) + RobotConstants.encoderZeroValues[i];
+                motorVals[1] = MathEx.scale(motorVals[1], new double[] {0,180}, new double[] {0,1}) + RobotConstants.encoderZeroValues[i];
             }
             /*for (DcMotorEx motor: RobotConstants.motors) {
                 char[] chars = motor.toString().toCharArray();
@@ -241,7 +238,12 @@ public class SwerveDrive {
                                 if (!testing) {
                                     motors[motorNum].setPower(motorVals[0]);
                                     servos[motorNum].setPosition(motorVals[1]);
+                                    //servos[motorNum].setPosition(0);
                                 }
+                                packet.put("motorPower "+c+": ",motorVals[0]);
+                                packet.put("servoPosition "+c+": ",motorVals[1]);
+                                packet.put("encoderPosition "+c+": ",moduleRotEncoder);
+                                packet.put("servoPositionActual "+c+": ",servos[motorNum].getPosition());
                                 telemetry.addData(c+"Drive",motorVals[0]);
                                 telemetry.addData(c+"Servo",motorVals[1]);
                             }

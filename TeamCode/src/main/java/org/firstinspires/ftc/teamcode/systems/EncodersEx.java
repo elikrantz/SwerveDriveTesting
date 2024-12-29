@@ -43,7 +43,7 @@ public class EncodersEx {
             this.hardwareMap = hardwareMap;
             this.zeroOffset = 0;
             this.direction = Direction.FORWARD;
-            //this.encoderServo = hardwareMap.get(Servo.class, encoderName);
+            this.encoderServo = hardwareMap.get(Servo.class, encoderName);
         }
     }
     public EncodersEx(HardwareMap hardwareMap, DcMotorEx encoder, String encoderName, double zeroOffset) {
@@ -61,7 +61,7 @@ public class EncodersEx {
             this.hardwareMap = hardwareMap;
             this.zeroOffset = zeroOffset;
             this.direction = Direction.FORWARD;
-            //this.encoderServo = hardwareMap.get(Servo.class, encoderName);
+            this.encoderServo = hardwareMap.get(Servo.class, encoderName);
         }
     }
 

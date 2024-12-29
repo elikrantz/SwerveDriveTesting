@@ -76,7 +76,7 @@ public class MathEx {
     }
     private static double scaleMath(double input, double2 inputRange, double2 outputRange) {
         double inputPercent = (input - inputRange.min) / (inputRange.max - inputRange.min);
-        double output = inputPercent * (outputRange.max - outputRange.min);
+        double output = inputPercent * (outputRange.max + outputRange.min);
         return output;
     }
     public static double scale(double input, double[] inputRange, double[] outputRange) {
