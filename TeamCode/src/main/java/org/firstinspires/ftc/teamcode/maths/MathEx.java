@@ -2,7 +2,8 @@ package org.firstinspires.ftc.teamcode.maths;
 
 import androidx.annotation.NonNull;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.teamcode.RobotConstants;
 
 public class MathEx {
@@ -53,11 +54,43 @@ public class MathEx {
     }
 
     public static double modulusDegrees(double degrees) {
-        return degrees % 360;
+        double output = degrees % 360;
+        if (output < 0) { output = 360 + output; }
+        return output;
     }
 
     public static double EncoderTicks2Degrees(int ticks) {
         return modulusDegrees(RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder);
         //return RobotConstants.gearRatio2Encoder * ticks / RobotConstants.pulsesPerRevEncoder;
     }
+
+    static class double2 {
+        double[] range = new double[2];
+        double min, max;
+        double2(double[] range) {
+            if (range.length != 2) { throw new IndexOutOfBoundsException("Array must be length 2"); }
+            this.range = range;
+            this.min = range[0];
+            this.max = range[1];
+        }
+    }
+    private static double scaleMath(double input, double2 inputRange, double2 outputRange) {
+        double inputPercent = (input - inputRange.min) / (inputRange.max - inputRange.min);
+        double output = inputPercent * (outputRange.max - outputRange.min);
+        return output;
+    }
+    public static double scale(double input, double[] inputRange, double[] outputRange) {
+        return scaleMath(input, new double2(inputRange), new double2(outputRange));
+    }
+
+    public static double getServoPositionDegrees(Servo encoderServo, double zeroOffset) {
+        double input = encoderServo.getPosition() - zeroOffset;
+        double positionAngle = MathEx.scale(input, new double[]{0,1}, new double[]{0,180}); //Remember to change output double to {0,360} when servos are fixed
+        return positionAngle;
+    }
+
+
+//    public static double range(double val ,double min, double max) {
+//        if (val)
+//    }
 }
