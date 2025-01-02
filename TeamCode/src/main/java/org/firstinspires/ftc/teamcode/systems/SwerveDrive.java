@@ -11,16 +11,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.maths.MathEx;
 import org.firstinspires.ftc.teamcode.maths.PIDcontroller;
 import org.firstinspires.ftc.teamcode.maths.diffySwerveCalc;
 import org.firstinspires.ftc.teamcode.maths.swerveCalc;
-import org.firstinspires.ftc.teamcode.tragectorymath.follower.DriveType;
+import org.firstinspires.ftc.teamcode.krantzPathing.follower.DriveType;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class SwerveDrive extends DriveType {
     private final Telemetry telemetry;
