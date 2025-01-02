@@ -71,7 +71,7 @@ public class RobotConstants {
     public static Servo[] reversedEncodersArray = new Servo[] {};
     public static final List<Servo> reversedEncoders = Arrays.asList(reversedEncodersArray);
 
-    public static double[] encoderZeroValues = new double[] {0.5,0.5};
+    public static double[] encoderZeroValues = new double[] {0.03,0.07};
 
     public static RevHubOrientationOnRobot.LogoFacingDirection LOGO_FACING_DIR =
             RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -105,7 +105,7 @@ public class RobotConstants {
      */
     // LEFT MODULE IS FIRST
     public static final double[][] modulePositions = new double[][] { // x,y (unit: inches) (left module is first) (positive is right and up)
-            {-4.5,-1},
-            {4.5,-1}
+            {-4.5,0},
+            {4.5,0}
     };
 }

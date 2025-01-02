@@ -41,7 +41,7 @@ public class swerveTeleOpTesting1 extends LinearOpMode {
             //x = MathEx.clip(x,0.05);
             //rx = MathEx.clip(rx,0.05);
 
-            swerveDrive.drive(x,y,rx);
+            swerveDrive.drive(x,y,rx,false);
 
             telemetry.update();
             dashboard.sendTelemetryPacket(packet);

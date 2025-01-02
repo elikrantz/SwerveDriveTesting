@@ -82,7 +82,7 @@ public class EncodersEx {
         TelemetryPacket packet = new TelemetryPacket();
         if (RobotConstants.usingServoForEncoders) {
             double input = encoderServo.getPosition() - zeroOffset;
-            positionAngle = MathEx.scale(input, new double[]{0,1}, new double[]{0,180});
+            positionAngle = MathEx.scale(input, new double[]{0,1}, new double[]{0,355});
         } else {
             double degrees = MathEx.EncoderTicks2Degrees(encoder.getCurrentPosition());
             positionAngle = degrees - zeroOffset;

@@ -17,17 +17,19 @@ import org.firstinspires.ftc.teamcode.maths.MathEx;
 import org.firstinspires.ftc.teamcode.maths.PIDcontroller;
 import org.firstinspires.ftc.teamcode.maths.diffySwerveCalc;
 import org.firstinspires.ftc.teamcode.maths.swerveCalc;
+import org.firstinspires.ftc.teamcode.tragectorymath.follower.DriveType;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class SwerveDrive {
+public class SwerveDrive extends DriveType {
     private final Telemetry telemetry;
     private final IMU imu;
     private final swerveCalc swerveMath = new swerveCalc();
     private final boolean optimumTurn;
     private final boolean testing;
     private final boolean turnThenMove;
+    private final double speed = 0.5;
 
     private double[] modulesTargetRot = new double[RobotConstants.numberOfModules];
     //private double[] modulesPower = new double[RobotConstants.numberOfModules];
@@ -133,12 +135,12 @@ public class SwerveDrive {
         this.turnThenMove = turnThenMove;
     }
 
-    public void drive (double x, double y, double rx) {
+    public void drive (double x, double y, double rx, boolean fieldOperated) {
         TelemetryPacket packet = new TelemetryPacket();
 
         double heading = AngleUnit.normalizeDegrees(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
-        double[][] output = swerveMath.calculate(x,y,rx,heading);
+        double[][] output = swerveMath.calculate(x,y,rx,heading,true,fieldOperated);
         //packet.put("output", output);
 
         for (int i = 0; i < RobotConstants.numberOfModules; i++) {
@@ -160,6 +162,13 @@ public class SwerveDrive {
 
             if (y != 0 || x != 0 || rx != 0) {
                 modulesTargetRot[i] = output[1][i];
+                if (MathEx.between(output[1][i],355,360) && RobotConstants.usingServoForEncoders) {
+                    if (MathEx.between(output[1][i],355,357.5) || output[1][i] == 357.5) {
+                        modulesTargetRot[i] = 355;
+                    } else if (MathEx.between(output[1][i],357.5,360) || output[1][i] == 360) {
+                        modulesTargetRot[i] = 0;
+                    }
+                }
             }
 
             moduleRotEncoder = AngleUnit.normalizeDegrees(moduleRotEncoder);
@@ -190,7 +199,10 @@ public class SwerveDrive {
                 motorVals = diffySwerveCalc.convert2Coax(modulePower,modulesTargetRot[i],telemetry);
                 motorVals[0] = MathEx.clip(motorVals[0],RobotConstants.powerCutOff);
                 //motorVals[1] = MathEx.clip(motorVals[1],RobotConstants.powerCutOff);
-                motorVals[1] = MathEx.scale(motorVals[1], new double[] {0,180}, new double[] {0,1}) + RobotConstants.encoderZeroValues[i];
+                //motorVals[1] = MathEx.scale(motorVals[1], new double[] {0,355}, new double[] {0,1}) + RobotConstants.encoderZeroValues[i];
+                double tempVal = MathEx.scale(motorVals[1], new double[] {-175,180}, new double[] {0,355});
+                motorVals[1] = MathEx.scale(motorVals[1], new double[] {0,355}, new double[] {0,1}) + RobotConstants.encoderZeroValues[i];
+                if (motorVals[1] < 0) { motorVals[1] += 1; }
             }
             /*for (DcMotorEx motor: RobotConstants.motors) {
                 char[] chars = motor.toString().toCharArray();
@@ -236,7 +248,7 @@ public class SwerveDrive {
                         if (Character.isDigit(c)) {
                             if (Character.getNumericValue(c) == (i+1)) {
                                 if (!testing) {
-                                    motors[motorNum].setPower(motorVals[0]);
+                                    motors[motorNum].setPower(motorVals[0] * speed);
                                     servos[motorNum].setPosition(motorVals[1]);
                                     //servos[motorNum].setPosition(0);
                                 }

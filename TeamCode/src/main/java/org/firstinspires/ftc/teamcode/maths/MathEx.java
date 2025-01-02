@@ -85,10 +85,13 @@ public class MathEx {
 
     public static double getServoPositionDegrees(Servo encoderServo, double zeroOffset) {
         double input = encoderServo.getPosition() - zeroOffset;
-        double positionAngle = MathEx.scale(input, new double[]{0,1}, new double[]{0,180}); //Remember to change output double to {0,360} when servos are fixed
+        double positionAngle = MathEx.scale(input, new double[]{0,1}, new double[]{0,355}); //Remember to change output double to {0,360} when servos are fixed
         return positionAngle;
     }
 
+    public static boolean between(double input, double min, double max) {
+        return (input < max && input > min) ? (true) : (false);
+    }
 
 //    public static double range(double val ,double min, double max) {
 //        if (val)

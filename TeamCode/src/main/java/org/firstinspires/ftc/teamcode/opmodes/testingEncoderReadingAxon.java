@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Config
 public class testingEncoderReadingAxon extends LinearOpMode {
     public static Servo servoTest;
-    public static String servoTestingName = "Servo1";
+    public static String servoTestingName = "module1Left";
     public static double position = 0.0;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
